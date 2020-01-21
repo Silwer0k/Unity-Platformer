@@ -17,6 +17,7 @@ public class PlayerController : MonoBehaviour
     [Range(0, 0.3f)] public float smoothingKoef = .03f;
     [Range(50f, 400f)] public float jumpForce = 200f;
     [Range(50f, 400f)] public float doubleJumpForce = 100f;
+    [Range(0, 3f)] public float shiftMultiplier = 2f;
 
     //Слои, определяющие поверхность земли
     public LayerMask groundLayers;
@@ -38,10 +39,16 @@ public class PlayerController : MonoBehaviour
         {
             _jump = true;
         }
+        if ( (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) && _isGrounded)
+        {
+            _horizontalMove *= shiftMultiplier;
+        }
     }
 
     private void FixedUpdate()
     {
+        _isGrounded = Physics2D.OverlapCircle(groundChecker.position, _groundCheckerRadius, groundLayers);
+
         MovePlayer(_horizontalMove * Time.fixedDeltaTime);
         JumpPlayer(_jump);
 
@@ -58,10 +65,6 @@ public class PlayerController : MonoBehaviour
 
     void JumpPlayer(bool jump)
     {
-        //Илюша, это тернарный оператор. Как if только в одну строчку. Слева от ? условие проверки стоит ли персонаж на земле или нет, 
-        //справа от ? - что получим если условие будет true, после : - что получим, если false
-        //В итоге в _isGrounded будет либо true, либо false 
-        _isGrounded = (Physics2D.OverlapCircle(groundChecker.position, _groundCheckerRadius, groundLayers) != null) ? true : false;
         if (jump)
         {
             if(_isGrounded)
