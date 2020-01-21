@@ -71,6 +71,7 @@ public class PlayerController : MonoBehaviour
             }
             else if (_doubleJump)
             {
+                rb2d.velocity = Vector2.zero;
                 rb2d.AddForce(new Vector2(0f, doubleJumpForce));
                 _doubleJump = false;
             }
