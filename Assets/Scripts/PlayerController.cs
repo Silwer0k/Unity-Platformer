@@ -11,9 +11,9 @@ public class PlayerController : MonoBehaviour
     private bool _isGrounded;
 
     public Rigidbody2D rb2d;
-    public float speed = 60f;
-    public float smoothingKoef = .03f;
-    public float jumpForce = 200f;
+    [Range(0, 100f)] public float speed = 60f;
+    [Range(0, 0.3f)] public float smoothingKoef = .03f;
+    [Range(50f, 400f)] public float jumpForce = 200f;
 
     public LayerMask groundLayers;
     public Transform groundChecker;
