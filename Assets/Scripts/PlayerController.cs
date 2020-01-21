@@ -18,6 +18,8 @@ public class PlayerController : MonoBehaviour
     [Range(50f, 400f)] public float jumpForce = 200f;
     [Range(50f, 400f)] public float doubleJumpForce = 100f;
     [Range(0, 3f)] public float shiftMultiplier = 2f;
+    //Можно ли управлять персонажем в воздухе
+    public bool canAirControl;
 
     //Слои, определяющие поверхность земли
     public LayerMask groundLayers;
@@ -49,10 +51,13 @@ public class PlayerController : MonoBehaviour
     {
         _isGrounded = Physics2D.OverlapCircle(groundChecker.position, _groundCheckerRadius, groundLayers);
 
-        MovePlayer(_horizontalMove * Time.fixedDeltaTime);
+        if(_isGrounded || (!_isGrounded && canAirControl))
+            MovePlayer(_horizontalMove * Time.fixedDeltaTime);
         JumpPlayer(_jump);
 
-        _horizontalMove = 0f;
+        //сохраняем инерцию полета, убираем как только приземлились
+        if(_isGrounded)
+            _horizontalMove = 0f;
         _jump = false;
     }
 
@@ -65,19 +70,21 @@ public class PlayerController : MonoBehaviour
 
     void JumpPlayer(bool jump)
     {
-        if (jump)
+        if(jump)
         {
-            if(_isGrounded)
+            if (_isGrounded)
             {
                 rb2d.AddForce(new Vector2(0f, jumpForce));
                 _doubleJump = true;
             }
             else if (_doubleJump)
             {
-                rb2d.velocity = Vector2.zero;
+                //если можем управлять персонажем в воздухе, то убираем перед дабл джампом velocity (игрок сам решит в какую сторону делать даблджамп),
+                //если не можем, то гасим только Y-состовляющую velocity, чтобы даблджамп был направлен в сторону первоначального прыжка 
+                rb2d.velocity = (canAirControl) ? Vector2.zero : new Vector2(rb2d.velocity.x, 0f);
                 rb2d.AddForce(new Vector2(0f, doubleJumpForce));
                 _doubleJump = false;
             }
-        }
+        }        
     }
 }

@@ -138,8 +138,9 @@ MonoBehaviour:
   speed: 50
   smoothingKoef: 0.078
   jumpForce: 200
-  doubleJumpForce: 103
+  doubleJumpForce: 158
   shiftMultiplier: 2
+  canAirControl: 1
   groundLayers:
     serializedVersion: 2
     m_Bits: 256
