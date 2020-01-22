@@ -10,8 +10,11 @@ public class PlayerController : MonoBehaviour
     private float _groundCheckerRadius = 0.1f;
     private bool _isGrounded;
     private bool _doubleJump;
+    //В какую сторону повернут персонаж: false - влево, true - вправо
+    private bool _rightTurning;
 
     public Rigidbody2D rb2d;
+    public Animator animator;
     [Range(0, 100f)] public float speed = 60f;
     //Коэффициент сглаживания передвижения персонажа, без него как то не живо выглядит
     [Range(0, 0.3f)] public float smoothingKoef = .03f;
@@ -32,10 +35,12 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
         {
             _horizontalMove = -speed;
+            animator.SetFloat("Speed", Mathf.Abs(_horizontalMove));
         }
         if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
         {
             _horizontalMove = speed;
+            animator.SetFloat("Speed", _horizontalMove);
         }
         if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
         {
@@ -44,7 +49,10 @@ public class PlayerController : MonoBehaviour
         if ( (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) && _isGrounded)
         {
             _horizontalMove *= shiftMultiplier;
+            animator.SetBool("isShifting", true);
         }
+        if (Input.GetKeyUp(KeyCode.LeftShift) || Input.GetKeyUp(KeyCode.RightShift))
+            animator.SetBool("isShifting", false);
     }
 
     private void FixedUpdate()
@@ -57,12 +65,20 @@ public class PlayerController : MonoBehaviour
 
         //сохраняем инерцию полета, убираем как только приземлились
         if(_isGrounded)
+        {
             _horizontalMove = 0f;
+            animator.SetFloat("Speed", _horizontalMove);
+        }
+
         _jump = false;
     }
 
     void MovePlayer(float moveValue)
     {
+        if (moveValue < 0 && _rightTurning)
+            ChangeTurning();
+        else if (moveValue > 0 && !_rightTurning)
+            ChangeTurning();
         Vector2 targetVelocity = new Vector2(moveValue, rb2d.velocity.y);
         //Функция, которая сглаживает перемещение персонажа
         rb2d.velocity = Vector2.SmoothDamp(rb2d.velocity, targetVelocity, ref _zeroVelocity, smoothingKoef);
@@ -86,5 +102,11 @@ public class PlayerController : MonoBehaviour
                 _doubleJump = false;
             }
         }        
+    }
+
+    void ChangeTurning()
+    {
+        _rightTurning = !_rightTurning;
+        transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
     }
 }
