@@ -59,9 +59,11 @@ public class PlayerController : MonoBehaviour
 
         if(_isGrounded || (!_isGrounded && canAirControl))
             MovePlayer(_horizontalMove * Time.fixedDeltaTime);
-        JumpPlayer(_jump);      
-
-        _jump = false;
+        if(_isGrounded)
+        {
+            JumpPlayer(_jump);
+            _jump = false;
+        }
     }
 
     void MovePlayer(float moveValue)
@@ -83,7 +85,11 @@ public class PlayerController : MonoBehaviour
 
     void JumpPlayer(bool jump)
     {
-              
+        if(jump)
+        {
+            _isGrounded = false;
+            rb2d.AddForce(new Vector2(0f, jumpForce), ForceMode2D.Force);
+        }
     }
 
     void ChangeTurning()
