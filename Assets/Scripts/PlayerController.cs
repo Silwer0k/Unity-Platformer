@@ -7,13 +7,13 @@ public class PlayerController : MonoBehaviour
     private float _horizontalMove = 0f;
     private Vector2 _zeroVelocity = Vector2.zero;
     private bool _jump;
-    private float _groundCheckerRadius = 0.1f;
+    private float _groundCheckerRadius = 0.03f;
     private bool _isGrounded;
     private bool _doubleJump;
     //В какую сторону повернут персонаж: false - влево, true - вправо
     private bool _rightTurning;
     //Количество оставшихся допольнительных прыжков прыжков (изменяется по ходу выполнения кода)
-    private int _extraJumpsLeft;
+    private int _jumpsLeft;
 
     public Rigidbody2D rb2d;
     public Animator animator;
@@ -23,8 +23,8 @@ public class PlayerController : MonoBehaviour
     [Range(50f, 400f)] public float jumpForce = 200f;
     [Range(50f, 400f)] public float extraJumpForce = 100f;
     [Range(0, 3f)] public float shiftMultiplier = 2f;
-    //Задаваемое количество дополнительных прыжков (не учитывая первый). Задаем это число через Editor(не изменяется по ходу выполнения кода)
-    public int extraJumps;
+    //Задаваемое количество прыжков. Задаем это число через Editor(не изменяется по ходу выполнения кода)
+    public int jumpsCount;
     //Можно ли управлять персонажем в воздухе
     public bool canAirControl;
 
@@ -35,7 +35,7 @@ public class PlayerController : MonoBehaviour
 
     void Awake()
     {
-        _extraJumpsLeft = extraJumps;
+        _jumpsLeft = jumpsCount;
     }
 
     // Update is called once per frame
@@ -69,11 +69,12 @@ public class PlayerController : MonoBehaviour
 
         if(_isGrounded || (!_isGrounded && canAirControl))
             MovePlayer(_horizontalMove * Time.fixedDeltaTime);
+        
         JumpPlayer(_jump);
         _jump = false;
         if (_isGrounded)
         {
-            _extraJumpsLeft = extraJumps;
+            _jumpsLeft = jumpsCount;
         }
     }
 
@@ -96,14 +97,17 @@ public class PlayerController : MonoBehaviour
 
     void JumpPlayer(bool jump)
     {
-        if(jump && (_extraJumpsLeft > 0))
+        if(jump && (_jumpsLeft > 0))
         {
-            _isGrounded = false;
             //если не можем управлять персонажем в воздухе, то гасим только Y-состовляющую velocity, чтобы прыжок был направлен в сторону движения.
             //если можем - убираем velocity полностью, чтобы при падении дабл джамп работал корректно (не просто гасилось бы падение, а производился прыжок)
             rb2d.velocity = (canAirControl) ? Vector2.zero : new Vector2(rb2d.velocity.x, 0f);
-            rb2d.AddForce(new Vector2(0f, jumpForce), ForceMode2D.Force);
-            _extraJumpsLeft -= 1;
+            if (_jumpsLeft < jumpsCount)
+                rb2d.AddForce(new Vector2(0f, extraJumpForce), ForceMode2D.Force);
+            else
+                rb2d.AddForce(new Vector2(0f, jumpForce), ForceMode2D.Force);
+            _isGrounded = false;
+            _jumpsLeft -= 1;
         }
     }
 

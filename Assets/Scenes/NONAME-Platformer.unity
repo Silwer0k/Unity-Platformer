@@ -1554,31 +1554,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 7063927472193403750, guid: c3531bcf3892e9044b3c80072385d0c3,
-        type: 3}
-      propertyPath: m_Offset.y
-      value: -0.056545585
-      objectReference: {fileID: 0}
-    - target: {fileID: 7063927472193403750, guid: c3531bcf3892e9044b3c80072385d0c3,
-        type: 3}
-      propertyPath: m_Offset.x
-      value: 0.061738014
-      objectReference: {fileID: 0}
-    - target: {fileID: 7063927472193403750, guid: c3531bcf3892e9044b3c80072385d0c3,
-        type: 3}
-      propertyPath: m_Size.x
-      value: 0.3444147
-      objectReference: {fileID: 0}
-    - target: {fileID: 7063927472193403750, guid: c3531bcf3892e9044b3c80072385d0c3,
-        type: 3}
-      propertyPath: m_Size.y
-      value: 0.47748345
-      objectReference: {fileID: 0}
-    - target: {fileID: 8037895511775589059, guid: c3531bcf3892e9044b3c80072385d0c3,
-        type: 3}
-      propertyPath: canAirControl
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 8037895511775589059, guid: c3531bcf3892e9044b3c80072385d0c3,
         type: 3}
       propertyPath: extraJumps
@@ -1658,12 +1633,12 @@ PrefabInstance:
     - target: {fileID: 8037895512602400437, guid: c3531bcf3892e9044b3c80072385d0c3,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.295
+      value: -0.299
       objectReference: {fileID: 0}
     - target: {fileID: 8037895512602400437, guid: c3531bcf3892e9044b3c80072385d0c3,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.086
+      value: 0.074
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c3531bcf3892e9044b3c80072385d0c3, type: 3}

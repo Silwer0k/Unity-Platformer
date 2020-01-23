@@ -99,8 +99,8 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.004596621, y: -0.032696337}
-  m_Size: {x: 0.20569152, y: 0.37957555}
+  m_Offset: {x: 0.061738014, y: -0.056545585}
+  m_Size: {x: 0.3444147, y: 0.47748345}
   m_Direction: 0
 --- !u!50 &8037895511775589058
 Rigidbody2D:
@@ -140,8 +140,9 @@ MonoBehaviour:
   speed: 50
   smoothingKoef: 0.078
   jumpForce: 200
-  doubleJumpForce: 158
+  extraJumpForce: 162
   shiftMultiplier: 2
+  jumpsCount: 2
   canAirControl: 1
   groundLayers:
     serializedVersion: 2
