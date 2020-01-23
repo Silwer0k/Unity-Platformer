@@ -35,12 +35,10 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
         {
             _horizontalMove = -speed;
-            animator.SetFloat("Speed", Mathf.Abs(_horizontalMove));
         }
         if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
         {
             _horizontalMove = speed;
-            animator.SetFloat("Speed", _horizontalMove);
         }
         if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
         {
@@ -51,7 +49,7 @@ public class PlayerController : MonoBehaviour
             _horizontalMove *= shiftMultiplier;
             animator.SetBool("isShifting", true);
         }
-        if (Input.GetKeyUp(KeyCode.LeftShift) || Input.GetKeyUp(KeyCode.RightShift))
+        if (Input.GetKeyUp(KeyCode.LeftShift) || Input.GetKeyUp(KeyCode.RightShift) || (_horizontalMove == 0f))
             animator.SetBool("isShifting", false);
     }
 
@@ -61,14 +59,7 @@ public class PlayerController : MonoBehaviour
 
         if(_isGrounded || (!_isGrounded && canAirControl))
             MovePlayer(_horizontalMove * Time.fixedDeltaTime);
-        JumpPlayer(_jump);
-
-        //сохраняем инерцию полета, убираем как только приземлились
-        if(_isGrounded)
-        {
-            _horizontalMove = 0f;
-            animator.SetFloat("Speed", _horizontalMove);
-        }
+        JumpPlayer(_jump);      
 
         _jump = false;
     }
@@ -79,9 +70,15 @@ public class PlayerController : MonoBehaviour
             ChangeTurning();
         else if (moveValue > 0 && !_rightTurning)
             ChangeTurning();
+        animator.SetFloat("Speed", Mathf.Abs(_horizontalMove));
         Vector2 targetVelocity = new Vector2(moveValue, rb2d.velocity.y);
         //Функция, которая сглаживает перемещение персонажа
         rb2d.velocity = Vector2.SmoothDamp(rb2d.velocity, targetVelocity, ref _zeroVelocity, smoothingKoef);
+        //сохраняем инерцию полета, убираем как только приземлились
+        if (_isGrounded)
+        {
+            _horizontalMove = 0f;
+        }
     }
 
     void JumpPlayer(bool jump)
