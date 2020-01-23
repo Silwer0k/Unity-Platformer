@@ -73,8 +73,9 @@ public class PlayerController : MonoBehaviour
     {
         _isGrounded = Physics2D.OverlapCircle(groundChecker.position, _groundCheckerRadius, groundLayers);
         animator.SetBool("isGrounded", _isGrounded);
+        animator.SetFloat("Speed", Mathf.Abs(_horizontalMove));
 
-        if(_isGrounded || (!_isGrounded && canAirControl))
+        if (_isGrounded || (!_isGrounded && canAirControl))
             MovePlayer(_horizontalMove * Time.fixedDeltaTime);
         
         JumpPlayer(_jump);
@@ -93,7 +94,6 @@ public class PlayerController : MonoBehaviour
             ChangeTurning();
         else if (moveValue > 0 && !_rightTurning)
             ChangeTurning();
-        animator.SetFloat("Speed", Mathf.Abs(_horizontalMove));
         Vector2 targetVelocity = new Vector2(moveValue, rb2d.velocity.y);
         //Функция, которая сглаживает перемещение персонажа
         rb2d.velocity = Vector2.SmoothDamp(rb2d.velocity, targetVelocity, ref _zeroVelocity, smoothingKoef);
