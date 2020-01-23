@@ -56,6 +56,7 @@ public class PlayerController : MonoBehaviour
     private void FixedUpdate()
     {
         _isGrounded = Physics2D.OverlapCircle(groundChecker.position, _groundCheckerRadius, groundLayers);
+        animator.SetBool("isGrounded", _isGrounded);
 
         if(_isGrounded || (!_isGrounded && canAirControl))
             MovePlayer(_horizontalMove * Time.fixedDeltaTime);
