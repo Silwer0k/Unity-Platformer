@@ -83,22 +83,7 @@ public class PlayerController : MonoBehaviour
 
     void JumpPlayer(bool jump)
     {
-        if(jump)
-        {
-            if (_isGrounded)
-            {
-                rb2d.AddForce(new Vector2(0f, jumpForce));
-                _doubleJump = true;
-            }
-            else if (_doubleJump)
-            {
-                //если можем управлять персонажем в воздухе, то убираем перед дабл джампом velocity (игрок сам решит в какую сторону делать даблджамп),
-                //если не можем, то гасим только Y-состовляющую velocity, чтобы даблджамп был направлен в сторону первоначального прыжка 
-                rb2d.velocity = (canAirControl) ? Vector2.zero : new Vector2(rb2d.velocity.x, 0f);
-                rb2d.AddForce(new Vector2(0f, doubleJumpForce));
-                _doubleJump = false;
-            }
-        }        
+              
     }
 
     void ChangeTurning()
