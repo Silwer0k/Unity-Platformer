@@ -1579,6 +1579,11 @@ PrefabInstance:
       propertyPath: canAirControl
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8037895511775589059, guid: c3531bcf3892e9044b3c80072385d0c3,
+        type: 3}
+      propertyPath: extraJumps
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8037895511775589065, guid: c3531bcf3892e9044b3c80072385d0c3,
         type: 3}
       propertyPath: m_Name
