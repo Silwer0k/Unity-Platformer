@@ -14,6 +14,7 @@ public class PlayerController : MonoBehaviour
     private bool _rightTurning;
     //Количество оставшихся допольнительных прыжков прыжков (изменяется по ходу выполнения кода)
     private int _jumpsLeft;
+    private float _shiftSpeed;
 
     public Rigidbody2D rb2d;
     public Animator animator;
@@ -41,21 +42,27 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
+        bool leftIsHolding = Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow);
+        bool rightIsHolding = Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow);
+
+        if (leftIsHolding)
         {
             _horizontalMove = -speed;
+            _shiftSpeed = _horizontalMove * shiftMultiplier;
         }
-        if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
+        else 
+        if (rightIsHolding)
         {
             _horizontalMove = speed;
+            _shiftSpeed = _horizontalMove * shiftMultiplier;
         }
         if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
         {
             _jump = true;
         }
-        if ( (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) && _isGrounded)
+        if ((Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) && (rightIsHolding || leftIsHolding))
         {
-            _horizontalMove *= shiftMultiplier;
+            _horizontalMove = _shiftSpeed;
             animator.SetBool("isShifting", true);
         }
         if (Input.GetKeyUp(KeyCode.LeftShift) || Input.GetKeyUp(KeyCode.RightShift) || (_horizontalMove == 0f))
@@ -75,6 +82,8 @@ public class PlayerController : MonoBehaviour
         if (_isGrounded)
         {
             _jumpsLeft = jumpsCount;
+            //сохраняем инерцию полета, убираем как только приземлились
+            _horizontalMove = 0f;
         }
     }
 
@@ -88,11 +97,6 @@ public class PlayerController : MonoBehaviour
         Vector2 targetVelocity = new Vector2(moveValue, rb2d.velocity.y);
         //Функция, которая сглаживает перемещение персонажа
         rb2d.velocity = Vector2.SmoothDamp(rb2d.velocity, targetVelocity, ref _zeroVelocity, smoothingKoef);
-        //сохраняем инерцию полета, убираем как только приземлились
-        if (_isGrounded)
-        {
-            _horizontalMove = 0f;
-        }
     }
 
     void JumpPlayer(bool jump)
