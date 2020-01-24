@@ -7,11 +7,14 @@ public class PlayerController : MonoBehaviour
     private float _horizontalMove = 0f;
     private Vector2 _zeroVelocity = Vector2.zero;
     private bool _jump;
-    private float _groundCheckerRadius = 0.1f;
+    private float _groundCheckerRadius = 0.03f;
     private bool _isGrounded;
     private bool _doubleJump;
     //В какую сторону повернут персонаж: false - влево, true - вправо
     private bool _rightTurning;
+    //Количество оставшихся допольнительных прыжков прыжков (изменяется по ходу выполнения кода)
+    private int _jumpsLeft;
+    private float _shiftSpeed;
 
     public Rigidbody2D rb2d;
     public Animator animator;
@@ -19,8 +22,10 @@ public class PlayerController : MonoBehaviour
     //Коэффициент сглаживания передвижения персонажа, без него как то не живо выглядит
     [Range(0, 0.3f)] public float smoothingKoef = .03f;
     [Range(50f, 400f)] public float jumpForce = 200f;
-    [Range(50f, 400f)] public float doubleJumpForce = 100f;
+    [Range(50f, 400f)] public float extraJumpForce = 100f;
     [Range(0, 3f)] public float shiftMultiplier = 2f;
+    //Задаваемое количество прыжков. Задаем это число через Editor(не изменяется по ходу выполнения кода)
+    public int jumpsCount;
     //Можно ли управлять персонажем в воздухе
     public bool canAirControl;
 
@@ -29,48 +34,58 @@ public class PlayerController : MonoBehaviour
     //Пустой объект, координатами и _groundCheckerRadius определяем стоит ли персонаж на земле или нет
     public Transform groundChecker;
 
+    void Awake()
+    {
+        _jumpsLeft = jumpsCount;
+    }
+
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
+        bool leftIsHolding = Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow);
+        bool rightIsHolding = Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow);
+
+        if (leftIsHolding)
         {
             _horizontalMove = -speed;
-            animator.SetFloat("Speed", Mathf.Abs(_horizontalMove));
+            _shiftSpeed = _horizontalMove * shiftMultiplier;
         }
-        if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
+        else 
+        if (rightIsHolding)
         {
             _horizontalMove = speed;
-            animator.SetFloat("Speed", _horizontalMove);
+            _shiftSpeed = _horizontalMove * shiftMultiplier;
         }
         if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
         {
             _jump = true;
         }
-        if ( (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) && _isGrounded)
+        if ((Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) && (rightIsHolding || leftIsHolding))
         {
-            _horizontalMove *= shiftMultiplier;
+            _horizontalMove = _shiftSpeed;
             animator.SetBool("isShifting", true);
         }
-        if (Input.GetKeyUp(KeyCode.LeftShift) || Input.GetKeyUp(KeyCode.RightShift))
+        if (Input.GetKeyUp(KeyCode.LeftShift) || Input.GetKeyUp(KeyCode.RightShift) || (_horizontalMove == 0f))
             animator.SetBool("isShifting", false);
     }
 
     private void FixedUpdate()
     {
         _isGrounded = Physics2D.OverlapCircle(groundChecker.position, _groundCheckerRadius, groundLayers);
+        animator.SetBool("isGrounded", _isGrounded);
+        animator.SetFloat("Speed", Mathf.Abs(_horizontalMove));
 
-        if(_isGrounded || (!_isGrounded && canAirControl))
+        if (_isGrounded || (!_isGrounded && canAirControl))
             MovePlayer(_horizontalMove * Time.fixedDeltaTime);
+        
         JumpPlayer(_jump);
-
-        //сохраняем инерцию полета, убираем как только приземлились
-        if(_isGrounded)
-        {
-            _horizontalMove = 0f;
-            animator.SetFloat("Speed", _horizontalMove);
-        }
-
         _jump = false;
+        if (_isGrounded)
+        {
+            _jumpsLeft = jumpsCount;
+            //сохраняем инерцию полета, убираем как только приземлились
+            _horizontalMove = 0f;
+        }
     }
 
     void MovePlayer(float moveValue)
@@ -86,22 +101,18 @@ public class PlayerController : MonoBehaviour
 
     void JumpPlayer(bool jump)
     {
-        if(jump)
+        if(jump && (_jumpsLeft > 0))
         {
-            if (_isGrounded)
-            {
-                rb2d.AddForce(new Vector2(0f, jumpForce));
-                _doubleJump = true;
-            }
-            else if (_doubleJump)
-            {
-                //если можем управлять персонажем в воздухе, то убираем перед дабл джампом velocity (игрок сам решит в какую сторону делать даблджамп),
-                //если не можем, то гасим только Y-состовляющую velocity, чтобы даблджамп был направлен в сторону первоначального прыжка 
-                rb2d.velocity = (canAirControl) ? Vector2.zero : new Vector2(rb2d.velocity.x, 0f);
-                rb2d.AddForce(new Vector2(0f, doubleJumpForce));
-                _doubleJump = false;
-            }
-        }        
+            //если не можем управлять персонажем в воздухе, то гасим только Y-состовляющую velocity, чтобы прыжок был направлен в сторону движения.
+            //если можем - убираем velocity полностью, чтобы при падении дабл джамп работал корректно (не просто гасилось бы падение, а производился прыжок)
+            rb2d.velocity = (canAirControl) ? Vector2.zero : new Vector2(rb2d.velocity.x, 0f);
+            if (_jumpsLeft < jumpsCount)
+                rb2d.AddForce(new Vector2(0f, extraJumpForce), ForceMode2D.Force);
+            else
+                rb2d.AddForce(new Vector2(0f, jumpForce), ForceMode2D.Force);
+            _isGrounded = false;
+            _jumpsLeft -= 1;
+        }
     }
 
     void ChangeTurning()
