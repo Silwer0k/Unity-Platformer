@@ -5,7 +5,7 @@ using UnityEngine.Events;
 
 public class PlayerCharacteristics : MonoBehaviour
 {
-    [SerializeField] private float _maxHealth;
+    [SerializeField] private float _maxHealth = 100f;
 
     private float _currentHealthValue;
 
