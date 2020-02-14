@@ -11,6 +11,13 @@ public class LockCameraByGround : MonoBehaviour
     [SerializeField] private float _verticalScreenPositionOnGround;
     [SerializeField] private float _defaultScreenPosition;
 
+    private CinemachineFramingTransposer _vCamTransposer;
+
+    private void Awake()
+    {
+        _vCamTransposer = gameObject.GetComponent<CinemachineVirtualCamera>().GetCinemachineComponent<CinemachineFramingTransposer>();
+    }
+
     private void Update()
     {
         if (_player.IsTouchingLayers(_groundLayers))
@@ -23,21 +30,8 @@ public class LockCameraByGround : MonoBehaviour
         }
     }
 
-    private CinemachineFramingTransposer GetVirtualCameraTransposer()
-    {
-        if(gameObject.GetComponent<CinemachineVirtualCamera>() != null)
-        {
-            return gameObject.GetComponent<CinemachineVirtualCamera>().GetCinemachineComponent<CinemachineFramingTransposer>();
-        }
-        else
-        {
-            throw new NullReferenceException("Cant find VCam");
-        }
-    }
-
     private void ChangeVCamScreenPos(float screenPos)
     {
-        var virtualCameraTransposer = GetVirtualCameraTransposer();
-        virtualCameraTransposer.m_ScreenY = Mathf.Lerp(virtualCameraTransposer.m_ScreenY, screenPos, 0.08f);
+        _vCamTransposer.m_ScreenY = Mathf.Lerp(_vCamTransposer.m_ScreenY, screenPos, 0.08f);
     }
 }

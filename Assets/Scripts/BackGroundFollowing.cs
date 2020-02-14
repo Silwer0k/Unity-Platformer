@@ -10,8 +10,6 @@ public class BackGroundFollowing : MonoBehaviour
     private Vector3 _lastCamPosition;
     private float _textureUnitSizeX;
     
-    
-    // Start is called before the first frame update
     void Start()
     {
         _camTransform = Camera.main.transform;
@@ -21,7 +19,6 @@ public class BackGroundFollowing : MonoBehaviour
         _textureUnitSizeX = _texture.width / _sprite.pixelsPerUnit; 
     }
 
-    // Update is called once per frame
     private void LateUpdate()
     {
         Vector3 deltaMovement = _camTransform.position - _lastCamPosition;
