@@ -1195,19 +1195,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1087644066}
-        m_MethodName: set_Player
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1087644066}
         m_MethodName: GetPlayerCollider
-        m_Mode: 1
+        m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -1659,7 +1648,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ad980451443d70438faac0bc6c235a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_LookaheadTime: 0.695
+  m_LookaheadTime: 0
   m_LookaheadSmoothing: 5
   m_LookaheadIgnoreY: 1
   m_XDamping: 1.7
@@ -1722,12 +1711,12 @@ PrefabInstance:
     - target: {fileID: 4584359830865772720, guid: d914f621c0e3ca4408b935d8b52b870c,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -3.4164605
+      value: -13.86
       objectReference: {fileID: 0}
     - target: {fileID: 4584359830865772720, guid: d914f621c0e3ca4408b935d8b52b870c,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.0264016
+      value: 0.03
       objectReference: {fileID: 0}
     - target: {fileID: 4584359830865772720, guid: d914f621c0e3ca4408b935d8b52b870c,
         type: 3}
@@ -2513,7 +2502,7 @@ MonoBehaviour:
   m_material: {fileID: 0}
   m_sharedMaterial: {fileID: 0}
   m_isDefaultMaterial: 0
-  m_padding: 1.25
+  m_padding: 0
   m_canvasRenderer: {fileID: 1696932568}
   m_TextComponent: {fileID: 1819440967}
   m_materialReferenceIndex: 1

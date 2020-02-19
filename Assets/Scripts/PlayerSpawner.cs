@@ -28,7 +28,7 @@ public class PlayerSpawner : MonoBehaviour
 
     public void SpawnPlayer()
     {
-        if (_playerObject == null)
+        if (_playerObject == null && _playerPrefab != null)
         {
             _playerObject = Instantiate(_playerPrefab, _spawnPoint.position, Quaternion.identity);
             OnPlayerSpawned.Invoke(_playerObject.transform);

@@ -12,12 +12,6 @@ public class LockCameraByGround : MonoBehaviour
     
     private float _defaultScreenPosition;
     private CinemachineFramingTransposer _vCamTransposer;
-    private Transform _player;
-    public Transform Player
-    {
-        get { return _player; }
-        set { _player = value; }
-    }
     private Collider2D _playerCollider;
 
     private void Awake()
@@ -43,8 +37,8 @@ public class LockCameraByGround : MonoBehaviour
         _vCamTransposer.m_ScreenY = Mathf.Lerp(_vCamTransposer.m_ScreenY, screenPos, 0.08f);
     }
 
-    public void GetPlayerCollider()
+    public void GetPlayerCollider(Transform player)
     {
-        _playerCollider = _player.GetComponent<Collider2D>();
+        _playerCollider = player.GetComponent<Collider2D>();
     }
 }
