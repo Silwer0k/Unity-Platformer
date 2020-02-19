@@ -13,7 +13,7 @@ public class LockCameraByGround : MonoBehaviour
     private float _defaultScreenPosition;
     private CinemachineFramingTransposer _vCamTransposer;
     private Transform _player;
-    public Transform player
+    public Transform Player
     {
         get { return _player; }
         set { _player = value; }

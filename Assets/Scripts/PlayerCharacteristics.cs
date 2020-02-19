@@ -10,6 +10,7 @@ public class PlayerCharacteristics : MonoBehaviour
     private float _currentHealthValue;
 
     public HealthChangedEvent OnHealthChanged;
+    public UnityEvent OnDeath;
 
     private void Awake()
     {
@@ -35,9 +36,8 @@ public class PlayerCharacteristics : MonoBehaviour
             {
                 _currentHealthValue = 0;
                 OnHealthChanged.Invoke(_currentHealthValue.ToString());
-                //Destroy player
+                OnDeath.Invoke();
             }
-            Debug.Log("current health = " + _currentHealthValue);
         }
     }
 
@@ -55,7 +55,6 @@ public class PlayerCharacteristics : MonoBehaviour
                 _currentHealthValue = _maxHealth;
                 OnHealthChanged.Invoke(_currentHealthValue.ToString());
             } 
-            Debug.Log("current health = " + _currentHealthValue);
         } 
     }
 }
