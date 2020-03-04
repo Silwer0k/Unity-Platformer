@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿    using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,7 +11,7 @@ public class PlayerController : MonoBehaviour
     private bool _isGrounded;
     private bool _doubleJump;
     //В какую сторону повернут персонаж: false - влево, true - вправо
-    private bool _rightTurning;
+    private bool _rightTurning=true;
     //Количество оставшихся допольнительных прыжков прыжков (изменяется по ходу выполнения кода)
     private int _jumpsLeft;
     private float _shiftSpeed;
@@ -103,6 +103,7 @@ public class PlayerController : MonoBehaviour
     {
         if(jump && (_jumpsLeft > 0))
         {
+            animator.SetTrigger("isJump");
             //если не можем управлять персонажем в воздухе, то гасим только Y-состовляющую velocity, чтобы прыжок был направлен в сторону движения.
             //если можем - убираем velocity полностью, чтобы при падении дабл джамп работал корректно (не просто гасилось бы падение, а производился прыжок)
             rb2d.velocity = (canAirControl) ? Vector2.zero : new Vector2(rb2d.velocity.x, 0f);
@@ -112,6 +113,7 @@ public class PlayerController : MonoBehaviour
                 rb2d.AddForce(new Vector2(0f, jumpForce), ForceMode2D.Force);
             _isGrounded = false;
             _jumpsLeft -= 1;
+            
         }
     }
 
